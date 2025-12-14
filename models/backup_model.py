@@ -4,6 +4,11 @@ import json
 from datetime import datetime
 from config import Config
 from models.database_model import DatabaseModel
+import time
+
+# Simple cache to avoid recomputing stats on every request
+_stats_cache = {'data': None, 'timestamp': 0}
+CACHE_DURATION = 5  # seconds
 
 class BackupModel:
     
@@ -74,6 +79,7 @@ class BackupModel:
             
             file_size = os.path.getsize(filepath)
             BackupModel.add_backup_entry(database_name, table_name, filename, file_size)
+            BackupModel.invalidate_stats_cache()  # Invalidate cache after backup
             
             return {
                 'filename': filename,
@@ -156,6 +162,7 @@ class BackupModel:
             except Exception:
                 # Non-fatal if stats update fails
                 pass
+            BackupModel.invalidate_stats_cache()  # Invalidate cache after restore
             return True
         except subprocess.CalledProcessError as e:
             raise Exception(f"Restore failed: {e.stderr or e.stdout}")
@@ -169,11 +176,20 @@ class BackupModel:
             os.remove(filepath)
         
         BackupModel.remove_backup_entry(filename)
+        BackupModel.invalidate_stats_cache()  # Invalidate cache after delete
         return True
     
     @staticmethod
     def get_backup_stats():
-        """Get backup statistics"""
+        """Get backup statistics with caching"""
+        global _stats_cache
+        
+        # Check if cache is still valid (within CACHE_DURATION seconds)
+        current_time = time.time()
+        if _stats_cache['data'] and (current_time - _stats_cache['timestamp']) < CACHE_DURATION:
+            return _stats_cache['data']
+        
+        # Cache expired or doesn't exist, compute fresh stats
         metadata = BackupModel.get_metadata()
         
         databases_backed_up = set()
@@ -208,9 +224,22 @@ class BackupModel:
             print(f"Error counting tables: {e}")
             total_tables = 0
         
-        return {
+        stats = {
             'total_backups': len(metadata),
             'databases_backed_up': len(databases_backed_up),
             'total_restored': total_restored,
             'total_tables': total_tables
         }
+        
+        # Update cache
+        _stats_cache['data'] = stats
+        _stats_cache['timestamp'] = current_time
+        
+        return stats
+    
+    @staticmethod
+    def invalidate_stats_cache():
+        """Invalidate the stats cache (call after backup/restore operations)"""
+        global _stats_cache
+        _stats_cache['data'] = None
+        _stats_cache['timestamp'] = 0
