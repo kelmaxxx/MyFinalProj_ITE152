@@ -1,7 +1,3 @@
-"""
-Database Controller - API endpoints for database operations
-"""
-
 from flask import Blueprint, jsonify, request
 from models.database_model import DatabaseModel
 

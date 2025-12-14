@@ -1,9 +1,3 @@
-"""
-MySQL Database Management System - Main Application
-ITE 152 - Database Management Project
-WARNING: Educational project. Not for production use without proper security audit.
-"""
-
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import os

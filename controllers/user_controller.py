@@ -1,7 +1,3 @@
-"""
-User Controller - API endpoints for user management
-"""
-
 from flask import Blueprint, jsonify, request
 from models.user_model import UserModel
 
