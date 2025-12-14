@@ -2,11 +2,15 @@
 
 .table-container {
     overflow-x: auto;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px; /* Prevent squishing on small screens */
 }
 
 .data-table thead {
@@ -14,23 +18,90 @@
 }
 
 .data-table th {
-    padding: 1rem 1.5rem;
+    padding: 1rem 1rem;
     text-align: left;
     font-weight: 600;
     font-size: 0.875rem;
     color: var(--text-dark);
     border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
 }
 
 .data-table td {
-    padding: 1rem 1.5rem;
+    padding: 1rem 1rem;
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     color: var(--text-dark);
+    vertical-align: middle;
+}
+
+/* Specific column widths for backups table */
+.data-table th:nth-child(1), /* Filename */
+.data-table td:nth-child(1) {
+    width: 25%;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.data-table th:nth-child(2), /* Database */
+.data-table td:nth-child(2) {
+    width: 15%;
+}
+
+.data-table th:nth-child(3), /* Table */
+.data-table td:nth-child(3) {
+    width: 15%;
+}
+
+.data-table th:nth-child(4), /* Date */
+.data-table td:nth-child(4) {
+    width: 20%;
+    white-space: nowrap;
+}
+
+.data-table th:nth-child(5), /* Size */
+.data-table td:nth-child(5) {
+    width: 10%;
+    white-space: nowrap;
+}
+
+.data-table th:nth-child(6), /* Actions */
+.data-table td:nth-child(6) {
+    width: 15%;
+    text-align: center;
+}
+
+/* Specific column widths for users table */
+#usersTableBody tr td:nth-child(1) { /* Username */
+    width: 35%;
+}
+
+#usersTableBody tr td:nth-child(2) { /* Host */
+    width: 35%;
+}
+
+#usersTableBody tr td:nth-child(3) { /* Actions */
+    width: 30%;
+    text-align: center;
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s ease;
 }
 
 .data-table tbody tr:hover {
     background: var(--auxiliary-color);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Action buttons in table cells */
+.data-table td .btn-icon {
+    margin: 0 0.25rem;
 }
 
 /* Table Item (for modal lists) */
@@ -46,4 +117,12 @@
 .table-list {
     max-height: 300px;
     overflow-y: auto;
+}
+
+/* Empty state styling */
+.data-table .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+    font-size: 0.938rem;
 }
