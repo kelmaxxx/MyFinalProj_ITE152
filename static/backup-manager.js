@@ -17,7 +17,7 @@ const BackupManager = {
     },
 
     render() {
-        const tbody = document.getElementById('backupTableBody');
+        const tbody = document.getElementById('backupsTableBody');
         
         if (state.backups.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No backups found</td></tr>';
@@ -26,6 +26,7 @@ const BackupManager = {
 
         tbody.innerHTML = state.backups.map(backup => `
             <tr>
+                <td>${backup.filename}</td>
                 <td>${backup.database}</td>
                 <td>${backup.table}</td>
                 <td>${formatDate(backup.timestamp)}</td>

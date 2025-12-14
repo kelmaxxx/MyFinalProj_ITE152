@@ -17,8 +17,8 @@ const DatabaseManager = {
     },
 
     render() {
-        const primaryList = document.getElementById('primaryList');
-        const backupList = document.getElementById('backupList');
+        const primaryList = document.getElementById('primaryDatabaseList');
+        const backupList = document.getElementById('backupDatabaseList');
         
         if (state.databases.length === 0) {
             primaryList.innerHTML = '<div class="empty-state">No databases found</div>';

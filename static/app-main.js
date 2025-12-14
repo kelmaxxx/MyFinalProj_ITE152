@@ -21,8 +21,24 @@ async function initApp() {
         });
     });
 
+    // Set up button handlers
+    const createDbBtn = document.getElementById('createDbBtn');
+    if (createDbBtn) createDbBtn.addEventListener('click', () => DatabaseManager.showCreateModal());
+
+    const createUserBtn = document.getElementById('createUserBtn');
+    if (createUserBtn) createUserBtn.addEventListener('click', () => UserManager.showCreateModal());
+
+    const refreshDatabasesBtn = document.getElementById('refreshDatabasesBtn');
+    if (refreshDatabasesBtn) refreshDatabasesBtn.addEventListener('click', () => DatabaseManager.loadAndRender());
+
+    const refreshBackupsBtn = document.getElementById('refreshBackupsBtn');
+    if (refreshBackupsBtn) refreshBackupsBtn.addEventListener('click', () => BackupManager.loadAndRender());
+
+    const refreshUsersBtn = document.getElementById('refreshUsersBtn');
+    if (refreshUsersBtn) refreshUsersBtn.addEventListener('click', () => UserManager.loadAndRender());
+
     // Load initial data
-    await navigateToPage('dashboard');
+    await navigateToPage('databases');
 }
 
 // Navigation handler
@@ -34,16 +50,13 @@ async function navigateToPage(page) {
 
     // Update active page
     document.querySelectorAll('.page').forEach(p => {
-        p.classList.toggle('active', p.id === `${page}Page`);
+        p.classList.toggle('active', p.id === `${page}-page`);
     });
 
     state.currentPage = page;
 
     // Load page-specific data
     switch (page) {
-        case 'dashboard':
-            await loadDashboard();
-            break;
         case 'databases':
             await DatabaseManager.loadAndRender();
             break;
@@ -92,8 +105,8 @@ async function loadBackupStats() {
 }
 
 function renderDashboardLists() {
-    const primaryList = document.getElementById('primaryList');
-    const backupList = document.getElementById('backupList');
+    const primaryList = document.getElementById('primaryDatabaseList');
+    const backupList = document.getElementById('backupDatabaseList');
     
     if (state.databases.length === 0) {
         primaryList.innerHTML = '<div class="empty-state">No databases found</div>';
@@ -117,11 +130,9 @@ function renderDashboardLists() {
 
 // Update dashboard stats (called after operations)
 async function updateDashboardStats() {
+    await loadDatabases();
     await loadBackupStats();
-    if (state.currentPage === 'dashboard') {
-        await loadDatabases();
-        renderDashboardLists();
-    }
+    renderDashboardLists();
 }
 
 // Start app when DOM is ready
