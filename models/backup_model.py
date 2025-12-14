@@ -184,18 +184,28 @@ class BackupModel:
         # Load persistent restore count
         total_restored = BackupModel._load_restore_count()
 
-        # Compute total tables across non-system databases
+        # Compute total tables across non-system databases using optimized query
         total_tables = 0
         try:
-            from models.database_model import DatabaseModel as _DB
-            dbs = _DB.get_all_databases()
-            for db in dbs:
-                try:
-                    tables = _DB.get_tables(db)
-                    total_tables += len(tables)
-                except Exception:
-                    pass
-        except Exception:
+            connection = DatabaseModel.get_connection('information_schema')
+            cursor = connection.cursor()
+            
+            # Single optimized query to count all tables
+            system_dbs = "','".join(Config.SYSTEM_DATABASES)
+            query = f"""
+                SELECT COUNT(*) 
+                FROM information_schema.TABLES 
+                WHERE TABLE_SCHEMA NOT IN ('{system_dbs}')
+                AND TABLE_TYPE = 'BASE TABLE'
+            """
+            cursor.execute(query)
+            result = cursor.fetchone()
+            total_tables = result[0] if result else 0
+            
+            cursor.close()
+            connection.close()
+        except Exception as e:
+            print(f"Error counting tables: {e}")
             total_tables = 0
         
         return {
