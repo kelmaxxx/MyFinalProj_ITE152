@@ -17,7 +17,7 @@ const UserManager = {
     },
 
     render() {
-        const tbody = document.getElementById('userTableBody');
+        const tbody = document.getElementById('usersTableBody');
         
         if (state.users.length === 0) {
             tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No users found</td></tr>';
