@@ -1,0 +1,49 @@
+/* Table Styles */
+
+.table-container {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background: var(--auxiliary-color);
+}
+
+.data-table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.938rem;
+    color: var(--text-dark);
+}
+
+.data-table tbody tr:hover {
+    background: var(--auxiliary-color);
+}
+
+/* Table Item (for modal lists) */
+.table-item {
+    padding: 0.75rem 1rem;
+    background: var(--auxiliary-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.938rem;
+    color: var(--text-dark);
+}
+
+.table-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
