@@ -625,6 +625,43 @@ body {
     background: var(--text-light);
 }
 
+/* Toast Notifications */
+.toast {
+    background: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 250px;
+    max-width: 400px;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-info {
+    border-left: 4px solid #2A46FF;
+}
+
+.toast-success {
+    border-left: 4px solid #10B981;
+}
+
+.toast-error {
+    border-left: 4px solid #EF4444;
+}
+
+.toast-warning {
+    border-left: 4px solid #F59E0B;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .database-panels {
