@@ -78,12 +78,12 @@
 
 #users-page .data-table th:nth-child(2),
 #users-page .data-table td:nth-child(2) { /* Host */
-    width: 35%;
+    width: 105%;
 }
 
 #users-page .data-table th:nth-child(3),
 #users-page .data-table td:nth-child(3) { /* Actions */
-    width: 30%;
+    width: 5%;
     text-align: center;
 }
 

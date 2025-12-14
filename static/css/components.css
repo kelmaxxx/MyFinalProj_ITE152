@@ -55,18 +55,19 @@
 }
 
 .btn-icon {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border: none;
     background: var(--white);
     border-radius: 8px;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
+    vertical-align: middle;
 }
 
 .btn-icon:hover {
@@ -75,8 +76,8 @@
 }
 
 .btn-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     stroke: var(--text-dark);
 }
 
