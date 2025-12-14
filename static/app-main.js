@@ -31,6 +31,9 @@ async function initApp() {
     const refreshDatabasesBtn = document.getElementById('refreshDatabasesBtn');
     if (refreshDatabasesBtn) refreshDatabasesBtn.addEventListener('click', () => loadDashboardData());
 
+    const refreshBackupListBtn = document.getElementById('refreshBackupListBtn');
+    if (refreshBackupListBtn) refreshBackupListBtn.addEventListener('click', () => loadDashboardData());
+
     const refreshBackupsBtn = document.getElementById('refreshBackupsBtn');
     if (refreshBackupsBtn) refreshBackupsBtn.addEventListener('click', () => BackupManager.loadAndRender());
 
