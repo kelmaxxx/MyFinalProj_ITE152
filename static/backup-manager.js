@@ -26,12 +26,12 @@ const BackupManager = {
 
         tbody.innerHTML = state.backups.map(backup => `
             <tr>
-                <td>${backup.filename}</td>
+                <td title="${backup.filename}">${backup.filename}</td>
                 <td>${backup.database}</td>
                 <td>${backup.table}</td>
                 <td>${formatDate(backup.timestamp)}</td>
                 <td>${formatBytes(backup.size)}</td>
-                <td>
+                <td style="white-space: nowrap;">
                     <button class="btn-icon" onclick="BackupManager.showRestoreModal('${backup.filename}')" title="Restore">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="23 4 23 10 17 10"></polyline>

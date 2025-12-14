@@ -28,7 +28,7 @@ const UserManager = {
             <tr>
                 <td>${user.username}</td>
                 <td>${user.host}</td>
-                <td>
+                <td style="white-space: nowrap;">
                     <button class="btn-icon" onclick="UserManager.showPrivilegesModal('${user.username}', '${user.host}')" title="Manage Privileges">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
