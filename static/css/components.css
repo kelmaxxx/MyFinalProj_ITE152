@@ -419,3 +419,48 @@
 .privilege-item:hover {
     background: var(--auxiliary-color);
 }
+
+/* Form Select Dropdown */
+.form-select {
+    width: 100%;
+    padding: 0.625rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.938rem;
+    color: var(--text-dark);
+    background-color: var(--white);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-select:hover {
+    border-color: var(--primary-color);
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 70, 255, 0.1);
+}
+
+.form-select option {
+    padding: 0.5rem;
+}
+
+/* Form Hint */
+.form-hint {
+    display: block;
+    margin-top: 0.375rem;
+    font-size: 0.813rem;
+    color: var(--text-light);
+    font-style: italic;
+}

@@ -119,9 +119,16 @@ const UserManager = {
 
     async showPrivilegesModal(username, host) {
         try {
-            const data = await api.users.getPrivileges(username, host);
-            if (data.success) {
-                const privileges = data.privileges;
+            // Get user privileges and all databases
+            const [privData, dbData] = await Promise.all([
+                api.users.getPrivileges(username, host),
+                api.databases.getAll()
+            ]);
+            
+            if (privData.success && dbData.success) {
+                const privileges = privData.privileges;
+                const databases = dbData.databases;
+                
                 const modalHtml = createModal(`Manage Privileges: ${username}@${host}`, `
                     <h4>Current Privileges</h4>
                     <div class="privileges-list">
@@ -134,7 +141,11 @@ const UserManager = {
                     <h4>Grant/Revoke Privileges</h4>
                     <div class="form-group">
                         <label for="privDatabase">Database</label>
-                        <input type="text" id="privDatabase" placeholder="Database name (e.g., mydb or * for all)" required>
+                        <select id="privDatabase" class="form-select">
+                            <option value="*">* (All Databases)</option>
+                            ${databases.map(db => `<option value="${db}">${db}</option>`).join('')}
+                        </select>
+                        <small class="form-hint">Select a specific database or * for all databases</small>
                     </div>
                     <div class="form-group">
                         <label>Select Privileges</label>

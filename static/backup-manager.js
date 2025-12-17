@@ -49,20 +49,33 @@ const BackupManager = {
         `).join('');
     },
 
-    showRestoreModal(filename) {
-        const backup = state.backups.find(b => b.filename === filename);
-        const modalHtml = createModal('Restore Backup', `
-            <p>Restore from <strong>${filename}</strong>?</p>
-            ${backup ? `<p>Original database: <strong>${backup.database}</strong></p>` : ''}
-            <div class="form-group">
-                <label for="targetDatabase">Target Database (Optional)</label>
-                <input type="text" id="targetDatabase" placeholder="Leave empty to use original database" value="${backup?.database || ''}">
-            </div>
-        `, [
-            { text: 'Cancel', class: 'btn-secondary' },
-            { text: 'Restore', class: 'btn-primary', action: () => this.restoreBackup(filename) }
-        ]);
-        showModal(modalHtml);
+    async showRestoreModal(filename) {
+        try {
+            const backup = state.backups.find(b => b.filename === filename);
+            // Get all databases
+            const data = await api.databases.getAll();
+            if (data.success) {
+                const databases = data.databases;
+                const modalHtml = createModal('Restore Backup', `
+                    <p>Restore from <strong>${filename}</strong>?</p>
+                    ${backup ? `<p>Original database: <strong>${backup.database}</strong></p>` : ''}
+                    <div class="form-group">
+                        <label for="targetDatabase">Target Database (Optional)</label>
+                        <select id="targetDatabase" class="form-select">
+                            <option value="">-- Use Original Database (${backup?.database || 'Unknown'}) --</option>
+                            ${databases.map(db => `<option value="${db}" ${db === backup?.database ? 'selected' : ''}>${db}</option>`).join('')}
+                        </select>
+                        <small class="form-hint">Select a database to restore to, or leave default to restore to original</small>
+                    </div>
+                `, [
+                    { text: 'Cancel', class: 'btn-secondary' },
+                    { text: 'Restore', class: 'btn-primary', action: () => this.restoreBackup(filename) }
+                ]);
+                showModal(modalHtml);
+            }
+        } catch (error) {
+            showToast('Failed to load databases', 'error');
+        }
     },
 
     async restoreBackup(filename) {

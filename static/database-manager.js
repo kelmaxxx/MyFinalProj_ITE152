@@ -96,18 +96,31 @@ const DatabaseManager = {
         }
     },
 
-    showBackupModal(database) {
-        const modalHtml = createModal('Backup Database', `
-            <p>Create a backup of <strong>${database}</strong>?</p>
-            <div class="form-group">
-                <label for="backupTable">Specific Table (Optional)</label>
-                <input type="text" id="backupTable" placeholder="Leave empty for full database backup">
-            </div>
-        `, [
-            { text: 'Cancel', class: 'btn-secondary' },
-            { text: 'Backup', class: 'btn-primary', action: () => this.createBackup(database) }
-        ]);
-        showModal(modalHtml);
+    async showBackupModal(database) {
+        try {
+            // Get tables for the database
+            const data = await api.databases.getTables(database);
+            if (data.success) {
+                const tables = data.tables;
+                const modalHtml = createModal('Backup Database', `
+                    <p>Create a backup of <strong>${database}</strong>?</p>
+                    <div class="form-group">
+                        <label for="backupTable">Specific Table (Optional)</label>
+                        <select id="backupTable" class="form-select">
+                            <option value="">-- Full Database Backup --</option>
+                            ${tables.map(table => `<option value="${table}">${table}</option>`).join('')}
+                        </select>
+                        ${tables.length === 0 ? '<small class="form-hint">No tables found in this database</small>' : ''}
+                    </div>
+                `, [
+                    { text: 'Cancel', class: 'btn-secondary' },
+                    { text: 'Backup', class: 'btn-primary', action: () => this.createBackup(database) }
+                ]);
+                showModal(modalHtml);
+            }
+        } catch (error) {
+            showToast('Failed to load tables', 'error');
+        }
     },
 
     async createBackup(database) {
