@@ -134,11 +134,44 @@ const UserManager = {
                     <h4>Grant/Revoke Privileges</h4>
                     <div class="form-group">
                         <label for="privDatabase">Database</label>
-                        <input type="text" id="privDatabase" placeholder="Database name" required>
+                        <input type="text" id="privDatabase" placeholder="Database name (e.g., mydb or * for all)" required>
                     </div>
                     <div class="form-group">
-                        <label>Privileges (comma-separated)</label>
-                        <input type="text" id="privList" placeholder="e.g., SELECT, INSERT, UPDATE" required>
+                        <label>Select Privileges</label>
+                        <div class="privileges-checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privSelect" value="SELECT">
+                                <span>SELECT</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privInsert" value="INSERT">
+                                <span>INSERT</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privUpdate" value="UPDATE">
+                                <span>UPDATE</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privDelete" value="DELETE">
+                                <span>DELETE</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privCreate" value="CREATE">
+                                <span>CREATE</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privDrop" value="DROP">
+                                <span>DROP</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privAlter" value="ALTER">
+                                <span>ALTER</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="privAll" value="ALL PRIVILEGES">
+                                <span>ALL PRIVILEGES</span>
+                            </label>
+                        </div>
                     </div>
                 `, [
                     { text: 'Close', class: 'btn-secondary' },
@@ -152,22 +185,32 @@ const UserManager = {
         }
     },
 
+    getSelectedPrivileges() {
+        const checkboxes = document.querySelectorAll('.privileges-checkbox-group input[type="checkbox"]:checked');
+        return Array.from(checkboxes).map(cb => cb.value);
+    },
+
     async grantPrivileges(username, host) {
         const database = document.getElementById('privDatabase').value.trim();
-        const privList = document.getElementById('privList').value.trim();
+        const privileges = this.getSelectedPrivileges();
 
-        if (!database || !privList) {
-            showToast('Database and privileges are required', 'error');
+        if (!database) {
+            showToast('Database is required', 'error');
             return;
         }
 
-        const privileges = privList.split(',').map(p => p.trim()).filter(p => p);
+        if (privileges.length === 0) {
+            showToast('Please select at least one privilege', 'error');
+            return;
+        }
 
         try {
             const data = await api.users.grantPrivileges(username, host, database, privileges);
             if (data.success) {
                 showToast(data.message, 'success');
                 closeModal();
+                // Refresh privileges modal to show updated privileges
+                await this.showPrivilegesModal(username, host);
             } else {
                 showToast(data.error, 'error');
             }
@@ -178,20 +221,25 @@ const UserManager = {
 
     async revokePrivileges(username, host) {
         const database = document.getElementById('privDatabase').value.trim();
-        const privList = document.getElementById('privList').value.trim();
+        const privileges = this.getSelectedPrivileges();
 
-        if (!database || !privList) {
-            showToast('Database and privileges are required', 'error');
+        if (!database) {
+            showToast('Database is required', 'error');
             return;
         }
 
-        const privileges = privList.split(',').map(p => p.trim()).filter(p => p);
+        if (privileges.length === 0) {
+            showToast('Please select at least one privilege', 'error');
+            return;
+        }
 
         try {
             const data = await api.users.revokePrivileges(username, host, database, privileges);
             if (data.success) {
                 showToast(data.message, 'success');
                 closeModal();
+                // Refresh privileges modal to show updated privileges
+                await this.showPrivilegesModal(username, host);
             } else {
                 showToast(data.error, 'error');
             }

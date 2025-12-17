@@ -1,7 +1,3 @@
-"""
-User Model - Handles MySQL user management
-"""
-
 from models.database_model import DatabaseModel
 
 class UserModel:

@@ -3,7 +3,7 @@
     --primary-color: #2A46FF;
     --secondary-color: #333984;
     --auxiliary-color: #F4F6FF;
-    --text-dark: #1F2937;
+    --text-dark: #333984;
     --text-light: #6B7280;
     --border-color: #E5E7EB;
     --success-color: #10B981;
@@ -25,7 +25,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     background: var(--auxiliary-color);
-    color: var(--text-dark);
+    color: var(--secondary-color);
     display: flex;
     min-height: 100vh;
 }

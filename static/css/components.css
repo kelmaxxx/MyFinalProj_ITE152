@@ -169,7 +169,7 @@
 .stat-value {
     font-size: 2.5rem; /* 40px - Large and bold */
     font-weight: 700;
-    color: #1F2937; /* Gray-800 */
+    color: var(--secondary-color);
     line-height: 1;
     margin: 0;
 }
@@ -253,4 +253,169 @@
     padding: 3rem 1rem;
     color: var(--text-light);
     font-size: 0.938rem;
+}
+
+/* Database Details Modal Styles */
+.database-details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.database-details-header h4 {
+    margin: 0;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Table List */
+.table-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.table-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.table-item:last-child {
+    border-bottom: none;
+}
+
+.table-item:hover {
+    background: var(--auxiliary-color);
+}
+
+.table-item span {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.btn-icon-sm {
+    width: 28px;
+    height: 28px;
+}
+
+.btn-icon-sm svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Column Row Styles for Table Creation */
+.column-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+}
+
+.column-name,
+.column-type {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.column-name:focus,
+.column-type:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(42, 70, 255, 0.1);
+}
+
+.btn-remove-column {
+    width: 32px;
+    height: 32px;
+}
+
+.btn-remove-column:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-remove-column:disabled:hover {
+    background: var(--white);
+    transform: none;
+}
+
+#columnsContainer {
+    margin-bottom: 0.5rem;
+}
+
+/* Privileges Checkbox Group */
+.privileges-checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--auxiliary-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label:hover {
+    background: var(--white);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-label span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    user-select: none;
+}
+
+.privileges-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.privilege-item {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    background: var(--white);
+}
+
+.privilege-item:last-child {
+    border-bottom: none;
+}
+
+.privilege-item:hover {
+    background: var(--auxiliary-color);
 }

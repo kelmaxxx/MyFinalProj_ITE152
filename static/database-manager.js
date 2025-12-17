@@ -160,10 +160,29 @@ const DatabaseManager = {
             if (data.success) {
                 const tables = data.tables;
                 const modalHtml = createModal(`Database: ${database}`, `
-                    <h4>Tables (${tables.length})</h4>
+                    <div class="database-details-header">
+                        <h4>Tables (${tables.length})</h4>
+                        <button class="btn btn-primary btn-sm" onclick="DatabaseManager.showCreateTableModal('${database}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add Table
+                        </button>
+                    </div>
                     <div class="table-list">
                         ${tables.length > 0 
-                            ? tables.map(t => `<div class="table-item">${t}</div>`).join('')
+                            ? tables.map(t => `
+                                <div class="table-item">
+                                    <span>${t}</span>
+                                    <button class="btn-icon btn-icon-sm" onclick="DatabaseManager.showDeleteTableModal('${database}', '${t}')" title="Delete Table">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            `).join('')
                             : '<p class="empty-state">No tables found</p>'
                         }
                     </div>
@@ -174,6 +193,164 @@ const DatabaseManager = {
             }
         } catch (error) {
             showToast('Failed to load database details', 'error');
+        }
+    },
+
+    showCreateTableModal(database) {
+        const modalHtml = createModal('Create New Table', `
+            <div class="form-group">
+                <label for="tableName">Table Name</label>
+                <input type="text" id="tableName" placeholder="Enter table name" required>
+            </div>
+            <div class="form-group">
+                <label>Columns</label>
+                <div id="columnsContainer">
+                    <div class="column-row">
+                        <input type="text" class="column-name" placeholder="Column name" required>
+                        <select class="column-type">
+                            <option value="INT">INT</option>
+                            <option value="VARCHAR(255)">VARCHAR(255)</option>
+                            <option value="TEXT">TEXT</option>
+                            <option value="DATE">DATE</option>
+                            <option value="DATETIME">DATETIME</option>
+                            <option value="BOOLEAN">BOOLEAN</option>
+                            <option value="DECIMAL(10,2)">DECIMAL(10,2)</option>
+                            <option value="FLOAT">FLOAT</option>
+                        </select>
+                        <button type="button" class="btn-icon btn-remove-column" onclick="DatabaseManager.removeColumn(this)" disabled title="Remove Column">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="DatabaseManager.addColumn()" style="margin-top: 0.5rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 4px;">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Column
+                </button>
+            </div>
+        `, [
+            { text: 'Cancel', class: 'btn-secondary' },
+            { text: 'Create', class: 'btn-primary', action: () => this.createTableInDatabase(database) }
+        ]);
+        showModal(modalHtml);
+    },
+
+    addColumn() {
+        const container = document.getElementById('columnsContainer');
+        const columnRow = document.createElement('div');
+        columnRow.className = 'column-row';
+        columnRow.innerHTML = `
+            <input type="text" class="column-name" placeholder="Column name" required>
+            <select class="column-type">
+                <option value="INT">INT</option>
+                <option value="VARCHAR(255)">VARCHAR(255)</option>
+                <option value="TEXT">TEXT</option>
+                <option value="DATE">DATE</option>
+                <option value="DATETIME">DATETIME</option>
+                <option value="BOOLEAN">BOOLEAN</option>
+                <option value="DECIMAL(10,2)">DECIMAL(10,2)</option>
+                <option value="FLOAT">FLOAT</option>
+            </select>
+            <button type="button" class="btn-icon btn-remove-column" onclick="DatabaseManager.removeColumn(this)" title="Remove Column">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        `;
+        container.appendChild(columnRow);
+        this.updateRemoveButtons();
+    },
+
+    removeColumn(button) {
+        const columnRow = button.closest('.column-row');
+        columnRow.remove();
+        this.updateRemoveButtons();
+    },
+
+    updateRemoveButtons() {
+        const rows = document.querySelectorAll('.column-row');
+        rows.forEach((row, index) => {
+            const removeBtn = row.querySelector('.btn-remove-column');
+            if (rows.length === 1) {
+                removeBtn.disabled = true;
+            } else {
+                removeBtn.disabled = false;
+            }
+        });
+    },
+
+    async createTableInDatabase(database) {
+        const tableName = document.getElementById('tableName').value.trim();
+        if (!tableName) {
+            showToast('Please enter a table name', 'error');
+            return;
+        }
+
+        const columnRows = document.querySelectorAll('.column-row');
+        const columns = [];
+        
+        for (let row of columnRows) {
+            const name = row.querySelector('.column-name').value.trim();
+            const type = row.querySelector('.column-type').value;
+            
+            if (!name) {
+                showToast('All columns must have a name', 'error');
+                return;
+            }
+            
+            columns.push({ name, type });
+        }
+
+        if (columns.length === 0) {
+            showToast('Please add at least one column', 'error');
+            return;
+        }
+
+        try {
+            const data = await api.databases.createTable(database, tableName, columns);
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeModal();
+                // Refresh the details modal to show the new table
+                await this.showDetailsModal(database);
+            } else {
+                showToast(data.error, 'error');
+            }
+        } catch (error) {
+            showToast('Failed to create table', 'error');
+        }
+    },
+
+    showDeleteTableModal(database, table) {
+        const modalHtml = createModal('Delete Table', `
+            <p>Are you sure you want to delete the table <strong>${table}</strong> from database <strong>${database}</strong>?</p>
+            <p class="text-danger">This action cannot be undone!</p>
+        `, [
+            { text: 'Cancel', class: 'btn-secondary' },
+            { text: 'Delete', class: 'btn-danger', action: () => this.deleteTable(database, table) }
+        ]);
+        showModal(modalHtml);
+    },
+
+    async deleteTable(database, table) {
+        try {
+            const data = await api.databases.deleteTable(database, table);
+            if (data.success) {
+                showToast(data.message, 'success');
+                closeModal();
+                // Refresh the details modal to show updated table list
+                await this.showDetailsModal(database);
+            } else {
+                showToast(data.error, 'error');
+            }
+        } catch (error) {
+            showToast('Failed to delete table', 'error');
         }
     }
 };

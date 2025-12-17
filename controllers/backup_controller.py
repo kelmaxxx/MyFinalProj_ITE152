@@ -1,7 +1,3 @@
-"""
-Backup Controller - API endpoints for backup operations
-"""
-
 from flask import Blueprint, jsonify, request
 from models.backup_model import BackupModel
 
