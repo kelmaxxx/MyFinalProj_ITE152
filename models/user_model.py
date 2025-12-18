@@ -18,13 +18,19 @@ class UserModel:
                 connection.close()
     
     @staticmethod
-    def create_user(username, password, host='localhost'):
+    def create_user(username, password=None, host='localhost'):
         """Create a new MySQL user"""
         connection = None
         try:
             connection = DatabaseModel.get_connection()
             cursor = connection.cursor()
-            cursor.execute(f"CREATE USER '{username}'@'{host}' IDENTIFIED BY '{password}'")
+            
+            # Create user with or without password
+            if password:
+                cursor.execute(f"CREATE USER '{username}'@'{host}' IDENTIFIED BY '{password}'")
+            else:
+                cursor.execute(f"CREATE USER '{username}'@'{host}'")
+            
             connection.commit()
             return True
         finally:

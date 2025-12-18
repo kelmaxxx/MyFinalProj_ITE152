@@ -131,6 +131,7 @@ const DatabaseManager = {
             if (data.success) {
                 showToast(data.message, 'success');
                 closeModal();
+                await this.loadAndRender(); // Refresh database list
                 await updateDashboardStats();
             } else {
                 showToast(data.error, 'error');
@@ -330,6 +331,8 @@ const DatabaseManager = {
             if (data.success) {
                 showToast(data.message, 'success');
                 closeModal();
+                // Refresh the database list
+                await this.loadAndRender();
                 // Refresh the details modal to show the new table
                 await this.showDetailsModal(database);
             } else {
@@ -357,6 +360,8 @@ const DatabaseManager = {
             if (data.success) {
                 showToast(data.message, 'success');
                 closeModal();
+                // Refresh the database list
+                await this.loadAndRender();
                 // Refresh the details modal to show updated table list
                 await this.showDetailsModal(database);
             } else {

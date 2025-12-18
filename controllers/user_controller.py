@@ -18,11 +18,11 @@ def create_user():
     try:
         data = request.get_json()
         username = data.get('username')
-        password = data.get('password')
+        password = data.get('password')  # Optional
         host = data.get('host', 'localhost')
         
-        if not username or not password:
-            return jsonify({'success': False, 'error': 'Username and password are required'}), 400
+        if not username:
+            return jsonify({'success': False, 'error': 'Username is required'}), 400
         
         UserModel.create_user(username, password, host)
         return jsonify({

@@ -53,8 +53,9 @@ const UserManager = {
                 <input type="text" id="username" placeholder="Enter username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
+                <label for="password">Password <span style="color: #6c757d; font-size: 0.9em;">(Optional)</span></label>
+                <input type="password" id="password" placeholder="Enter password (leave empty for no password)">
+                <small class="form-hint">Leave empty to create user without a password</small>
             </div>
             <div class="form-group">
                 <label for="host">Host</label>
@@ -72,8 +73,8 @@ const UserManager = {
         const password = document.getElementById('password').value;
         const host = document.getElementById('host').value.trim() || 'localhost';
 
-        if (!username || !password) {
-            showToast('Username and password are required', 'error');
+        if (!username) {
+            showToast('Username is required', 'error');
             return;
         }
 
